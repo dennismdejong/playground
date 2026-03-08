@@ -1,0 +1,17 @@
+services:
+  webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: ai-interface
+    ports:
+      - "3000:8080"
+    environment:
+      # We wijzen naar 'host.docker.internal' omdat de Model Runner 
+      # op je Mac zelf draait, niet binnen dit specifieke Compose-netwerk.
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open-webui:/app/backend/data
+
+volumes:
+  open-webui:

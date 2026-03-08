@@ -1,0 +1,27 @@
+hub:
+  db:
+    # We laten de database in het geheugen draaien.
+    # Dit is sneller en heeft GEEN last van rechtenproblemen/crashes op Mac.
+    type: sqlite-memory
+
+singleuser:
+  image:
+    name: jupyter/datascience-notebook
+    tag: latest
+  cmd: null
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - jupyter.local
+  # Hieronder de magie voor HTTPS:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 500m
+    # Vertel cert-manager welke issuer hij moet gebruiken
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
+  tls:
+    - hosts:
+        - jupyter.local
+      # Hier wordt het certificaat opgeslagen in Kubernetes
+      secretName: jupyter-tls
